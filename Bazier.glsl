@@ -21,7 +21,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     //smoothstep (ease in out)
     vec2 p5 = vec2(0.4, 0.2);
     vec2 p6 = vec2(-0.4, 0.2);
-    float t_smooth = smoothstep(0.0, 1.0, t); 
+    float t_smooth = smoothstep(0.0, 1.0, t);
     
     vec2 posC = mix(p5, p6, t_smooth);
     col += (0.01 / length(uv - posC)) * vec3(0.3, 1.0, 0.3); // green

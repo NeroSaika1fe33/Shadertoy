@@ -28,7 +28,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float denom = dot(planeNormal, rayDir);
     vec3 col = vec3(0.1);
 
-    if (abs(denom) > 0.0001) { 
+    if (abs(denom) > 0.0001) {
         // t = dot(pos - ori, normal) / dot(dir, normal)
         float t = (dot(planePos - rayOri, planeNormal)) / denom;
         

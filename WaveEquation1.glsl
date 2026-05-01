@@ -21,9 +21,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     //vec3 n=normalize(abs(vec3(0.0f,0.0f,1.0f)+vec3(uv.x,uv.y,h)));
 
     float e = 0.1;
-    float hx = getWaveHeight(uv + vec2(e, 0.0)) - h; 
-    float hy = getWaveHeight(uv + vec2(0.0, e)) - h; 
-    vec3 n = normalize(vec3(-hx, -hy, e));   
+    float hx = getWaveHeight(uv + vec2(e, 0.0)) - h;
+    float hy = getWaveHeight(uv + vec2(0.0, e)) - h;
+    vec3 n = normalize(vec3(-hx, -hy, e));
     vec3 col =mix(vec3(0.5,0.1,0.8),vec3(0.9,0.9,0.9),n);
     vec3 spec =vec3(0.2*pow((max(hx,hy*0.5)),8.0));
     fragColor=vec4(col+spec,1.0);
