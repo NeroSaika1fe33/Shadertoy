@@ -1,17 +1,4 @@
-// #iChannel0 "file://BufferA.glsl"
-
-float getWaveHeight(vec2 p) {
-
-    float d = length(p);
-
-    float w1 = sin(d * 15.0 - iTime * 3.0);
-
-    float w2 = sin(p.x * 12.0 + p.y * 8.0 + iTime * 2.0);
-
-    return (w1 * 0.5 + w2 * 0.5) * 0.5 + 0.5;
-
-}
-
+// #iChannel0 "file://WaveEquation2//BufferA.glsl"
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
