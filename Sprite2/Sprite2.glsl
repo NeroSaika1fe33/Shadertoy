@@ -1,5 +1,3 @@
-#iChannel0 "file://assets//Grace.png"
-
 mat3 rotateY(float theta) { 
     float c = cos(theta);
     float s = sin(theta);

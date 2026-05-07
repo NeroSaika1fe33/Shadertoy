@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "passes": {
+    "Image": {
+      "inputs": {
+        "iChannel0": {
+          "type": "texture",
+          "path": "..\\assets\\Eff_Avatar_SilverWolf999_00_Lizi04_6x6A_V8.png",
+          "filter": "linear",
+          "wrap": "clamp",
+          "vflip": true,
+          "grayscale": false
+        }
+      }
+    }
+  }
+}

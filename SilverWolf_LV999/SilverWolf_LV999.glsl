@@ -1,6 +1,3 @@
-#iChannel0 "file://assets//123.png"
-
-// 模拟 Blender 中的逻辑：将线性增长转化为序列帧坐标
 vec2 getSequenceUV(vec2 uv, float linearVal, vec2 gridRes) {
     // 1. 对应第一个 Wrap 36.0 和 Snap/Floor 逻辑
     float totalFrames = gridRes.x * gridRes.y;

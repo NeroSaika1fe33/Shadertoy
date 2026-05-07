@@ -14,11 +14,12 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord)
     vec3 col=mix(vec3(1.0,0.0,0.0),vec3(1.0,1.0,1.0),round);
     fragColor=vec4(col,1.0);
     
-    if(length(uv)>d){
+    if(length(uv)>d)
+    {
     //波动方程
     //h=sin(k*d-ω*t),k是波的频率，ω是波的速度,ｈ是波的高度
     //衰减Attenuation：1/d
-        //波动方程
+    //波动方程
     //h=sin(k*d-ω*t),k是波的频率，ω是波的速度,ｈ是波的高度
     //衰减Attenuation：1/d
     float ds=length(uv);
@@ -37,6 +38,4 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord)
     vec3 spec =vec3(0.2*pow((max(hx,hy*0.5)),8.0));
     fragColor=vec4(col+spec,1.0);
     }
-
-
 }
