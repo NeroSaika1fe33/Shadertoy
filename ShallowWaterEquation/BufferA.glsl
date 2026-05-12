@@ -1,70 +1,68 @@
-// #iChannel0 "self"
+#define PI 3.1417
 
-// 简单的圆形距离函数
-float sdCircle(vec2 p, vec2 center, float r) {
-    return length(p - center) - r;
+#define SIZE 256.0
+#define RIPPLES_STRENGTH 10.0
+#define RIPPLES_INTENSITY 1.0 //<1, 100>
+
+#define DENSITY 12.0
+
+vec2 randomPos(vec2 uv)
+{
+    float angle = fract(sin(dot(uv, vec2(19.42343, 25.341245f))) * 42311.71234f);
+    
+    return vec2(cos(angle) * 0.5f, sin(angle)) * 0.5f + 0.5f;
 }
 
-void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec2 uv = fragCoord.xy / iResolution.xy;
-    vec2 texel = 1.0 / iResolution.xy;
+float damping = 0.99f;
 
-    // 1. 读取当前像素状态: r=高度, g=U流速, b=V流速
-    vec4 data = texture(iChannel0, uv);
-    float h = data.r;
-    float u = data.g;
-    float v = data.b;
+float sdCircle(vec2 uv, vec2 pos, float radius)
+{
+    return length(uv - pos) - radius;
+}
 
-    // 2. 采样相邻像素
-    float hL = texture(iChannel0, uv - vec2(texel.x, 0.0)).r;
-    float hR = texture(iChannel0, uv + vec2(texel.x, 0.0)).r;
-    float hD = texture(iChannel0, uv - vec2(0.0, texel.y)).r;
-    float hU = texture(iChannel0, uv + vec2(0.0, texel.y)).r;
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = (fragCoord - 0.5f * iResolution.xy) / iResolution.y;
+    vec2 mousePos = (iMouse.xy - 0.5f * iResolution.xy) / iResolution.y;
     
-    float uL = texture(iChannel0, uv - vec2(texel.x, 0.0)).g;
-    float uR = texture(iChannel0, uv + vec2(texel.x, 0.0)).g;
-    float vD = texture(iChannel0, uv - vec2(0.0, texel.y)).b;
-    float vU = texture(iChannel0, uv + vec2(0.0, texel.y)).b;
-
-    // --- 物理核心计算 ---
-    float dt = 0.15;      // 步长
-    float visc = 0.98;    // 粘度
+    vec2 id = floor(uv * SIZE);
     
-    // 加速度驱动流速
-    float u_now = (u + (hL - hR) * dt) * visc;
-    float v_now = (v + (hD - hU) * dt) * visc;
+    vec2 centerUv = fragCoord / iResolution.xy;
+    float value = texture(iChannel0, centerUv).r;
+    float prevValue = texture(iChannel0, centerUv).g;
     
-    // 流量驱动高度
-    float h_now = (h + (uL - uR + vD - vU) * dt) * 0.998;
-
-    // --- 排水口逻辑 (不造波的吸收器) ---
-    vec2 drainPos = iResolution.xy * vec2(0.8, 0.2); // 定位在右下角
-    float dDrain = length(fragCoord - drainPos);
-    if (dDrain < 40.0) {
-        float absorb = smoothstep(40.0, 0.0, dDrain);
-        // 关键：不强行设高度，而是对所有变量做剧烈乘法衰减
-        h_now *= (1.0 - absorb * 0.6);
-        u_now *= (1.0 - absorb * 0.9);
-        v_now *= (1.0 - absorb * 0.9);
+    vec2 leftUv = (fragCoord - vec2(1.0f, 0.0f)) / iResolution.xy;
+    vec2 rightUv = (fragCoord + vec2(1.0f, 0.0f)) / iResolution.xy;
+    vec2 upUv = (fragCoord + vec2(0.0f, 1.0f)) / iResolution.xy;
+    vec2 downUv = (fragCoord - vec2(0.0f, 1.0f)) / iResolution.xy;
+    
+    float left = texture(iChannel0, leftUv).r;
+    float right = texture(iChannel0, rightUv).r;
+    float up = texture(iChannel0, upUv).r;
+    float down = texture(iChannel0, downUv).r;
+    
+    float circle = 0.0f;
+    if(iMouse.z > 0.0f)
+    {
+        float circle = sdCircle(uv, mousePos, 0.02f);
+        value += 1.0f - step(0.0f, circle);
     }
 
-    // --- 障碍物逻辑 (深灰色圆柱) ---
-    vec2 obsPos = iResolution.xy * 0.45;
-    float dObs = sdCircle(fragCoord, obsPos, 60.0);
-    if (dObs < 0.0) {
-        h_now = 0.0; u_now = 0.0; v_now = 0.0;
+    vec2 fuv = fract(uv * SIZE);
+    vec2 rndPos = randomPos(fuv + iTime);
+    vec2 chooseOneRndPos = randomPos(id + iTime);
+    float ripplesIntensityFactor = (mod(iTime, 50.0f) + 5.0f) * 0.001f;
+
+    if(distance(chooseOneRndPos, rndPos) <= 0.0f)
+    {
+        circle = sdCircle(fuv, chooseOneRndPos, ripplesIntensityFactor);
+        value += (1.0f - step(0.0f, circle)) * RIPPLES_STRENGTH;
     }
 
-    // --- 交互造波 (鼠标左键) ---
-    if (iMouse.z > 0.5) {
-        float dMouse = length(fragCoord - iMouse.xy);
-        if (dMouse < 15.0) h_now += 0.4;
-    }
+    prevValue += (-2.0f * value + right + left) * 0.25f;
+    prevValue += (-2.0f * value + up + down) * 0.25f;
+    value += prevValue;
+    value *= damping;
 
-    // 数值安全截断，防止飞走
-    h_now = clamp(h_now, -1.0, 2.0);
-    u_now = clamp(u_now, -0.8, 0.8);
-    v_now = clamp(v_now, -0.8, 0.8);
-
-    fragColor = vec4(h_now, u_now, v_now, 1.0);
+    fragColor = vec4(value, prevValue, (right - left) / 2.0f, (up - down) / 2.0f);
 }

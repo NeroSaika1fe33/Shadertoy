@@ -56,6 +56,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         if (d < 10.0 && !isObstacle) h_now = 1.0; 
     }
 
+    if(h_now<0.005)h_now=0.0;
+
     fragColor = vec4(h_now, h_last, 0.0, 1.0);
 }
 

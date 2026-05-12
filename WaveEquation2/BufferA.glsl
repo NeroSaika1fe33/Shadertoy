@@ -11,7 +11,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float h_right = texture(iChannel0, uv + vec2(texel.x, 0)).r;
 
     float h_now = (h_up + h_down + h_left + h_right) * 0.5 - h_prev;
-    h_now *= 0.999;
+    h_now *= 0.9999;
 
     if (iMouse.z > 0.0) {
         float d = length(fragCoord.xy - iMouse.xy);
@@ -20,6 +20,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             h_now = 1.0; 
         }
     }
+    if(h_now<0.05)
+    h_now=0.0;
     fragColor += vec4(h_now, h_last, 0.0, 1.0);
 }
 
