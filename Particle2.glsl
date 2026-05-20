@@ -1,3 +1,4 @@
+//Create particles moving along Bezier curves with random control points
 float myHash(vec2 p) {
     return fract(sin(dot(p, vec2(12.9898, 78.233))) * 437108.104103);
 }

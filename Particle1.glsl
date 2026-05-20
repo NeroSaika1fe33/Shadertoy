@@ -1,3 +1,4 @@
+//Create particles in random positions in line which is moving up and down
 float Myhash(vec2 p) {
     return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
 }

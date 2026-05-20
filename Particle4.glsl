@@ -1,3 +1,4 @@
+//Create a particle with a rectangular shape
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;

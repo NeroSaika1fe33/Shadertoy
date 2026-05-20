@@ -34,10 +34,15 @@ vec4 voronoi( in vec2 x, float w ,float di)
 void mainImage(out vec4 fragColor,in vec2 fragCoord)
 {
     vec2 uv = fragCoord/iResolution.xy;
-    vec4 col=voronoi(0.7*uv,0.5,0.2);
+    vec4 v1=voronoi(0.7*uv,0.5,0.2);
+    vec4 v2=voronoi(0.2*uv,0.1,0.6);
+    vec4 v3=voronoi(0.8*uv,0.6,0.7);
+    vec4 v=0.5*(v1+v2+v3);
+
+    vec3 col = sqrt(v.yzw);
     if ((col.g > 0.64) && (col.g < 0.655))
-        col.rgb = 1.0*vec3( 0.239, 0.714, 0.984);
+        col.rgb =vec3(1.0);
     else if (col.g >= 0.655) 
         col.rgb = 1.45*vec3( 0.239, 0.714, 0.984); 
-    fragColor = col;
+    fragColor = vec4(col, 1.0);
 }

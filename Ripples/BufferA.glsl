@@ -25,7 +25,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uv = (fragCoord - 0.5f * iResolution.xy) / iResolution.y;
     vec2 mousePos = (iMouse.xy - 0.5f * iResolution.xy) / iResolution.y;
     
-    //vec2 id = floor(uv * SIZE);
+    vec2 id = floor(uv * SIZE);
     
     vec2 centerUv = fragCoord / iResolution.xy;
     float value = texture(iChannel0, centerUv).r;
@@ -48,16 +48,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         value += 1.0f - step(0.0f, circle);
     }
 
-    // vec2 fuv = fract(uv * SIZE);
-    // vec2 rndPos = randomPos(fuv + iTime);
-    // vec2 chooseOneRndPos = randomPos(id + iTime);
-    // float ripplesIntensityFactor = (mod(iTime, 50.0f) + 5.0f) * 0.001f;
+    vec2 fuv = fract(uv * SIZE);
+    vec2 rndPos = randomPos(fuv + iTime);
+    vec2 chooseOneRndPos = randomPos(id + iTime);
+    float ripplesIntensityFactor = (mod(iTime, 50.0f) + 5.0f) * 0.001f;
 
-    // if(distance(chooseOneRndPos, rndPos) <= 0.0f)
-    // {
-    //     circle = sdCircle(fuv, chooseOneRndPos, ripplesIntensityFactor);
-    //     value += (1.0f - step(0.0f, circle)) * RIPPLES_STRENGTH;
-    // }
+    if(distance(chooseOneRndPos, rndPos) <= 0.0f)
+    {
+        circle = sdCircle(fuv, chooseOneRndPos, ripplesIntensityFactor);
+        value += (1.0f - step(0.0f, circle)) * RIPPLES_STRENGTH;
+    }
 
     prevValue += (-2.0f * value + right + left) * 0.25f;
     prevValue += (-2.0f * value + up + down) * 0.25f;

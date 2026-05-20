@@ -6,6 +6,10 @@
         "iChannel0": {
           "type": "texture",
           "path": "../assets/Grace.png"
+        },
+        "iChannel1": {
+          "type": "texture",
+          "path": "../assets/Denshi.png"
         }
       }
     }
