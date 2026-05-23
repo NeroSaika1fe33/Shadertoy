@@ -12,9 +12,9 @@ vec2 Unity_Voronoi_float(vec2 UV, float AngleOffset, float CellDensity)
 {
     vec2 g = floor(UV * CellDensity);
     vec2 f = fract(UV * CellDensity);
-    float t = 8.0;
-    vec3 res = vec3(8.0, 0.0, 0.0);
-    vec2 Out;
+    float t = 5.0;
+    vec3 res = vec3(t, 0.0, 0.0);
+    vec2 Out = vec2(0.0);
 
     for(int y=-1; y<=1; y++)
     {
@@ -23,8 +23,8 @@ vec2 Unity_Voronoi_float(vec2 UV, float AngleOffset, float CellDensity)
             vec2 lattice = vec2(x,y);
             vec2 offset = voronoi_hash(lattice + g, AngleOffset);
             float d = distance(lattice + offset, f);
-            if(d < res.x)
-            {
+            if(d < res.x )
+            {   
                 res = vec3(d, offset.x, offset.y);
                 Out.x = res.x;
                 Out.y = res.y;
@@ -46,14 +46,18 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float dis = v.x;
     float cells = v.y;
 
-    float frame = smoothstep(1.0, 0.1, dis);
+    if(dis<0.01)
+    {
+        v=Unity_Voronoi_float(uv, flow/10.0, CellDesity);
+    }
 
+    float frame = smoothstep(1.0, 0.1, dis);
     vec3 waterBase = vec3(0.3, 0.2, 0.5);
     vec3 brightWater = vec3(0.2, 0.5, 1.0);
     vec3 col = vec3(0.0);
     col += texture(iChannel0,uv).rgb * 0.5;
     col += mix(waterBase, brightWater, cells * 1.0);
-    
+
     col = mix(vec3(1.0), col, frame);
 
     fragColor = vec4(col, 1.0);

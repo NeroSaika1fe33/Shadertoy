@@ -2,7 +2,12 @@
   "version": "1.0",
   "passes": {
     "Image": {
-      "inputs": {}
+      "inputs": {
+        "iChannel1": {
+          "type": "texture",
+          "path": "../assets/DeepSeaGirl.jpg"
+        }
+      }
     },
     "BufferA": {
       "path": "BufferA.glsl",
