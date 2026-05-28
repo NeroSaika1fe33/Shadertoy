@@ -46,9 +46,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float dis = v.x;
     float cells = v.y;
 
-    if(dis<0.01)
+    if(dis<0.001)
     {
-        v=Unity_Voronoi_float(uv, flow/10.0, CellDesity);
+        v=Unity_Voronoi_float(uv, flow/100.0, CellDesity);
     }
 
     float frame = smoothstep(1.0, 0.1, dis);
