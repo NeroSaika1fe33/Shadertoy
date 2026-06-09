@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "passes": {
+    "Image": {
+      "inputs": {
+        "iChannel0": {
+          "type": "texture",
+          "path": "../assets/DeepSeaGirl.jpg",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      }
+    }
+  }
+}

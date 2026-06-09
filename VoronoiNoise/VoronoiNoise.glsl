@@ -41,24 +41,25 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float CellDesity = 5.0;
     vec2 v = Unity_Voronoi_float(uv, flow, CellDesity);
     
-    //v.x is the distance to the nearest cell center
+    //v.x is the distance between fract UV point and the nearest cell center
     //v.y is the cell ID (0 to 1)
     float dis = v.x;
     float cells = v.y;
 
-    if(dis<0.001)
-    {
-        v=Unity_Voronoi_float(uv, flow/100.0, CellDesity);
-    }
-
+    //smoothstep to draw the frame of cells
     float frame = smoothstep(1.0, 0.1, dis);
     vec3 waterBase = vec3(0.3, 0.2, 0.5);
     vec3 brightWater = vec3(0.2, 0.5, 1.0);
-    vec3 col = vec3(0.0);
-    col += texture(iChannel0,uv).rgb * 0.5;
-    col += mix(waterBase, brightWater, cells * 1.0);
+    //the water will be similar to crystal when crystallightness closed to 1.0
+    float crystallightness = 0.0001;
 
-    col = mix(vec3(1.0), col, frame);
+    vec3 col = vec3(0.0);
+    //the texture will be stretched with screen ratio
+    vec2 texUV =vec2(uv.x*iResolution.y/iResolution.x, uv.y);
+    col += texture(iChannel0,texUV).rgb * 0.5;
+
+    col += mix(waterBase, brightWater, cells * crystallightness);
+    col = mix(vec3(0.995), col, frame);
 
     fragColor = vec4(col, 1.0);
 }
