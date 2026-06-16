@@ -32,6 +32,15 @@ mat3 rotZ(float angle)
     );
 }
 
+mat3 move(vec3 d)
+{
+    return mat3(
+        1.,0.,0.,
+        0.,1.,0.,
+        d.x,d.y,d.z
+    );
+}
+
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     // 1. 标准像素坐标归一化 (-0.5 到 0.5)
@@ -39,19 +48,20 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec3 col = vec3(1.); 
 
     // 2. 设置光线追踪相机 (Raycasting Setup)
-    vec3 ro = vec3(0.0, 0.0, 2.0);            // 相机放在 Z = 2 的位置
+    vec3 ro = vec3(0.0, 0.0, 3.0);            // 相机放在 Z = 9 的位置
     vec3 rd = normalize(vec3(p, -1.0));       // 光线向屏幕内 (-Z) 射出
 
-    // 为了让它动起来，我们可以手动让光线/摄像机绕着立方体旋转
-    vec3 Rotmat = vec3(0.,iTime * 0.5,90.);
-    
-    ro = rotY(Rotmat.y) * ro * rotZ(Rotmat.z);
-    rd = rotY(Rotmat.y) * rd * rotZ(Rotmat.z);
-
-    // 3. 定义立方体尺寸并调用 IQ 的求交函数
-    vec3 boxSize = vec3(0.4, 0.4, 0.4); // 边长为 0.8 的正方体
+    vec2 t= vec2(0.);
     vec3 normal;
-    vec2 t = boxIntersection(ro, rd, boxSize, normal);
+
+    vec3 Rotmat = vec3(0.,iTime * 0.8,1.);
+    vec3 Movmat = vec3(cos(iTime),-sin(iTime),0.);
+    ro += Movmat;
+    ro = rotY(Rotmat.y) * ro * rotZ(Rotmat.z) ;
+    rd = rotY(Rotmat.y) * rd * rotZ(Rotmat.z);
+    vec3 boxSize = vec3(0.4, 0.4, 0.4); 
+
+    t += boxIntersection(ro, rd, boxSize, normal);
 
 if(t.x > 0.0) 
     {
@@ -60,7 +70,7 @@ if(t.x > 0.0)
         
         // 2. 计算碰撞点到盒子边界的相对距离
         // boxSize 是 vec3(0.4)
-        vec3 dToEdge = abs(boxSize - abs(hitPos));
+        vec3 dToEdge = abs(vec3(0.4, 0.4, 0.4) - abs(hitPos));
         
         // 3. 如果某两个轴都非常靠近边界，说明在棱边上
         // 我们通过对距离进行排序或筛选来找出“棱”
