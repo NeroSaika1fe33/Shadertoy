@@ -9,6 +9,9 @@
           "filter": "linear",
           "wrap": "clamp"
         }
+      },
+      "resolution": {
+        "aspectRatio": "1:1"
       }
     }
   }

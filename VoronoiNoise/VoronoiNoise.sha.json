@@ -7,6 +7,9 @@
           "type": "texture",
           "path": "..\\assets\\DeepSeaGirl.jpg"
         }
+      },
+      "resolution": {
+        "aspectRatio": "1:1"
       }
     }
   }

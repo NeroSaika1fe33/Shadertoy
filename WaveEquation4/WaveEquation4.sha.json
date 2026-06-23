@@ -6,8 +6,11 @@
         "iChannel1": {
           "type": "texture",
           "path": "../assets/DeepSeaGirl.jpg",
-          "filter": "mipmap",
           "wrap": "clamp"
+        },
+        "iChannel0": {
+          "type": "buffer",
+          "source": "BufferA"
         }
       }
     },
