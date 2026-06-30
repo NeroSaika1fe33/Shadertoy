@@ -16,7 +16,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 blockNum = floor(pos + vec2(0.5));
     float squareDist = length(blockNum);
     //Position set by pow
-    float style =0.6;   //can use this to change the style;
+    float style = 0.6;   //can use this to change the style;
     float edge = pow(sin(0.5*iTime-squareDist*style + (blockNum.x-blockNum.y)*0.005),0.4);
 
     float aSide = smoothstep(edge-0.4,edge-0.1,1.2*dist)*2.0-1.0;
